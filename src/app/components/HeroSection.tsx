@@ -46,7 +46,7 @@ export default function HeroSection() {
                     {/* Label */}
                     <div className="flex items-center gap-4 mb-10">
                         <div className="h-px w-12 bg-amber-400" />
-                        <p className="section-label">Gateway to Thailand</p>
+                        {/* <p className="section-label">Gateway to Thailand</p> */}
                     </div>
 
                     {/* Headline */}

@@ -108,7 +108,7 @@ export default function Navbar() {
                     <p className="font-serif text-2xl font-bold">
                         <span className="text-gold">Star</span><span>Visa</span>
                     </p>
-                    <p className="text-[10px] tracking-[0.3em] text-amber-400/60 uppercase mt-1">Gateway to Thailand</p>
+                    {/* <p className="text-[10px] tracking-[0.3em] text-amber-400/60 uppercase mt-1">Gateway to Thailand</p> */}
                 </div>
 
                 <div className="flex flex-col gap-1">
