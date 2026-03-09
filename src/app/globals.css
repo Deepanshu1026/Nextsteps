@@ -251,12 +251,15 @@ body {
   align-items: center;
 }
 
-/* ── YouTube iframe hero background ── */
+/* ── Hero video background ── */
 .hero-video-wrap {
   position: absolute;
-  inset: 0;
+  inset: -8%;
+  /* slight oversize — gives room for parallax shift */
   overflow: hidden;
   z-index: 0;
+  will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .hero-video-poster {
@@ -268,38 +271,13 @@ body {
   z-index: 2;
 }
 
-/*
- * The iframe must be much bigger than the viewport so YouTube's
- * logo / recommend thumbnails are clipped off-screen.
- * Aspect ratio trick: keep 16:9 but ensure it always covers 100vw × 100vh.
- */
-.hero-yt-iframe {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  /* min-size: whichever dimension is larger after maintaining 16:9 */
-  width: calc(100vh * (16 / 9));
-  height: calc(100vw * (9 / 16));
-
-  min-width: 100vw;
-  min-height: 100vh;
-
-  transform: translate(-50%, -50%);
-  border: none;
-  pointer-events: none;
-  /* clicks pass through to page content */
-  transition: opacity 1.4s ease;
-  z-index: 1;
-}
-
-/* keep the old parallax-bg class for mouse-parallax in page.tsx */
+/* parallax-bg kept for backward-compat references */
 .parallax-bg {
   position: absolute;
   inset: 0;
   overflow: hidden;
   will-change: transform;
 }
-
 
 
 .parallax-overlay {

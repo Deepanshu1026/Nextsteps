@@ -1,78 +1,94 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
-// 🇹🇭 Thailand 4K Drone Aerial footage — YouTube embed
-// "This is THAILAND 2020" by One Man Wolf Pack UltraHD
-const YT_VIDEO_ID = "eUqijGsJHkY";
-
-const VIDEO_POSTER = "/hero_modern.png";
+// ─── Video sources (tried in order) ───────────────────────────────────────────
+// Pexels "Aerial view of islands in Thailand" — 1080p 25fps
+// Free to use: https://www.pexels.com/video/1851190/
+const VIDEO_SOURCES = [
+    {
+        src: "https://videos.pexels.com/video-files/1851190/1851190-hd_1920_1080_25fps.mp4",
+        type: "video/mp4",
+    },
+    // SD fallback (480p) – loads quicker on slow connections
+    {
+        src: "https://videos.pexels.com/video-files/1851190/1851190-sd_640_360_25fps.mp4",
+        type: "video/mp4",
+    },
+];
 
 export default function HeroSection() {
-    const bgRef = useRef<HTMLDivElement>(null);
+    const wrapRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
-    const iframeRef = useRef<HTMLIFrameElement>(null);
-    const [mounted, setMounted] = useState(false);
-    const [videoRdy, setVideoRdy] = useState(false);
+    const vidRef = useRef<HTMLVideoElement>(null);
 
-    /* ── Mount guard (prevent SSR/hydration mismatch) ── */
+    const [mounted, setMounted] = useState(false); // avoids SSR hydration mismatch
+    const [videoOn, setVideoOn] = useState(false); // true once video starts playing
+
+    /* ── Client mount guard ── */
     useEffect(() => { setMounted(true); }, []);
 
-    /* ── Fade iframe in after short delay (it auto-plays immediately) ── */
+    /* ── Video fade-in when it starts playing ── */
     useEffect(() => {
-        if (!mounted) return;
-        const t = setTimeout(() => setVideoRdy(true), 1800);
-        return () => clearTimeout(t);
-    }, [mounted]);
+        const vid = vidRef.current;
+        if (!vid) return;
+        const onPlay = () => setVideoOn(true);
+        vid.addEventListener("playing", onPlay);
+        return () => vid.removeEventListener("playing", onPlay);
+    }, [mounted]); // re-run once mounted so vidRef is populated
 
-    /* ── Scroll parallax on content only (iframe stays fixed-size) ── */
+    /* ── Scroll parallax ── */
     useEffect(() => {
         const onScroll = () => {
             const y = window.scrollY;
-            if (bgRef.current) bgRef.current.style.transform = `translateY(${y * 0.15}px)`;
-            if (textRef.current) textRef.current.style.transform = `translateY(${y * 0.2}px)`;
-            if (textRef.current) textRef.current.style.opacity = `${1 - y / 600}`;
+            if (wrapRef.current) wrapRef.current.style.transform = `translateY(${y * 0.35}px)`;
+            if (textRef.current) textRef.current.style.transform = `translateY(${y * 0.18}px)`;
+            if (textRef.current) textRef.current.style.opacity = `${Math.max(0, 1 - y / 600)}`;
         };
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    const go = (id: string) => {
+    const go = (id: string) =>
         document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
-    };
-
-    const embedSrc =
-        `https://www.youtube.com/embed/${YT_VIDEO_ID}` +
-        `?autoplay=1&mute=1&loop=1&playlist=${YT_VIDEO_ID}` +
-        `&controls=0&showinfo=0&rel=0&modestbranding=1` +
-        `&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1`;
 
     return (
         <section id="home" className="parallax-hero">
 
-            {/* ── YouTube iframe background ── */}
-            <div ref={bgRef} className="hero-video-wrap">
+            {/* ────────────────────────────────────────────────────────────
+                VIDEO BACKGROUND WRAPPER
+                ─────────────────────────────────────────────────────── */}
+            <div ref={wrapRef} className="hero-video-wrap">
 
-                {/* Static poster — shown until iframe fades in */}
+                {/* Poster — plain dark bg before video loads, no image */}
                 <div
                     className="hero-video-poster"
-                    style={{
-                        opacity: videoRdy ? 0 : 1,
-                        backgroundImage: `url('${VIDEO_POSTER}')`,
-                    }}
+                    style={{ opacity: videoOn ? 0 : 1 }}
                 />
 
-                {/* YouTube iframe — client-only (avoids hydration mismatch) */}
+                {/* <video> — client-only to prevent hydration error */}
                 {mounted && (
-                    <iframe
-                        ref={iframeRef}
-                        src={embedSrc}
-                        className="hero-yt-iframe"
-                        style={{ opacity: videoRdy ? 1 : 0 }}
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen={false}
-                        title="Thailand background video"
-                        aria-hidden="true"
-                    />
+                    <video
+                        ref={vidRef}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="auto"
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            objectPosition: "center",
+                            opacity: videoOn ? 1 : 0,
+                            transition: "opacity 1.4s ease",
+                        }}
+                    >
+                        {VIDEO_SOURCES.map(s => (
+                            <source key={s.src} src={s.src} type={s.type} />
+                        ))}
+                    </video>
                 )}
             </div>
 
@@ -80,40 +96,35 @@ export default function HeroSection() {
             <div className="parallax-overlay" />
             <div className="parallax-overlay-bottom" />
 
-            {/* Floating noise grain */}
+            {/* Noise grain */}
             <div
-                className="absolute inset-0 opacity-[0.03] pointer-events-none"
+                className="absolute inset-0 opacity-[0.03] pointer-events-none z-[1]"
                 style={{
                     backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
                     backgroundSize: "200px",
                 }}
             />
 
-            {/* Parallax depth orb — top-right (gold) */}
-            <div
-                className="absolute top-[10%] right-[15%] w-72 h-72 rounded-full pointer-events-none hero-orb-1"
-                style={{ background: "radial-gradient(circle, rgba(201,168,92,0.15) 0%, transparent 70%)", filter: "blur(40px)" }}
-            />
-            {/* Parallax depth orb — bottom-left (blue) */}
-            <div
-                className="absolute bottom-[20%] left-[8%] w-56 h-56 rounded-full pointer-events-none hero-orb-2"
-                style={{ background: "radial-gradient(circle, rgba(100,140,220,0.12) 0%, transparent 70%)", filter: "blur(50px)" }}
-            />
+            {/* Depth orbs */}
+            <div className="absolute top-[10%] right-[15%] w-72 h-72 rounded-full pointer-events-none hero-orb-1"
+                style={{ background: "radial-gradient(circle, rgba(201,168,92,0.15) 0%, transparent 70%)", filter: "blur(40px)" }} />
+            <div className="absolute bottom-[20%] left-[8%] w-56 h-56 rounded-full pointer-events-none hero-orb-2"
+                style={{ background: "radial-gradient(circle, rgba(100,140,220,0.12) 0%, transparent 70%)", filter: "blur(50px)" }} />
 
-            {/* Content */}
+            {/* ────────────────────────────────────────────────────────────
+                CONTENT
+                ─────────────────────────────────────────────────────── */}
             <div ref={textRef} className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
                 <div className="max-w-3xl">
 
-                    {/* Label line */}
                     <div className="flex items-center gap-4 mb-10">
                         <div className="h-px w-12 bg-amber-400" />
                     </div>
 
-                    {/* Headline */}
                     <h1 className="display-xl text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                        <span data-shuffle>Your Trusted</span><br />
-                        <em className="text-gold not-italic"><span data-shuffle>Visa Partner</span></em><br />
-                        <span data-shuffle>in Thailand</span>
+                        Your Trusted<br />
+                        <em className="text-gold not-italic">Visa Partner</em><br />
+                        in Thailand
                     </h1>
 
                     <p className="text-white/60 text-lg leading-relaxed mb-12 max-w-xl font-light">
@@ -121,7 +132,6 @@ export default function HeroSection() {
                         so your journey begins with clarity and confidence.
                     </p>
 
-                    {/* CTA Row */}
                     <div className="flex flex-wrap gap-4 mb-16">
                         <button id="hero-cta-primary" onClick={() => go("#contact")} className="btn-gold">
                             <span style={{ position: "relative", zIndex: 1 }}>Begin Your Journey</span>
@@ -134,7 +144,6 @@ export default function HeroSection() {
                         </button>
                     </div>
 
-                    {/* Trust Stats */}
                     <div className="flex flex-wrap items-center gap-8">
                         {[
                             { val: "25+", label: "Programmes" },
