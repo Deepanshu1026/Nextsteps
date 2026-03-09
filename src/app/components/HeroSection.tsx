@@ -1,22 +1,34 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-// High-quality free Thailand aerial video from Pexels
-// https://www.pexels.com/video/aerial-view-of-islands-in-thailand-1851190/
-const VIDEO_SRC =
-    "https://videos.pexels.com/video-files/1851190/1851190-hd_1920_1080_25fps.mp4";
-const VIDEO_POSTER = "/hero_modern.png"; // shown while video loads
+// 🇹🇭 Thailand 4K Drone Aerial footage — YouTube embed
+// "This is THAILAND 2020" by One Man Wolf Pack UltraHD
+const YT_VIDEO_ID = "eUqijGsJHkY";
+
+const VIDEO_POSTER = "/hero_modern.png";
 
 export default function HeroSection() {
     const bgRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
-    const vidRef = useRef<HTMLVideoElement>(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const [mounted, setMounted] = useState(false);
+    const [videoRdy, setVideoRdy] = useState(false);
 
-    /* ── Scroll parallax (applies to the video wrapper) ── */
+    /* ── Mount guard (prevent SSR/hydration mismatch) ── */
+    useEffect(() => { setMounted(true); }, []);
+
+    /* ── Fade iframe in after short delay (it auto-plays immediately) ── */
+    useEffect(() => {
+        if (!mounted) return;
+        const t = setTimeout(() => setVideoRdy(true), 1800);
+        return () => clearTimeout(t);
+    }, [mounted]);
+
+    /* ── Scroll parallax on content only (iframe stays fixed-size) ── */
     useEffect(() => {
         const onScroll = () => {
             const y = window.scrollY;
-            if (bgRef.current) bgRef.current.style.transform = `translateY(${y * 0.45}px)`;
+            if (bgRef.current) bgRef.current.style.transform = `translateY(${y * 0.15}px)`;
             if (textRef.current) textRef.current.style.transform = `translateY(${y * 0.2}px)`;
             if (textRef.current) textRef.current.style.opacity = `${1 - y / 600}`;
         };
@@ -24,57 +36,44 @@ export default function HeroSection() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
-    /* ── Fade video in once it starts playing ── */
-    useEffect(() => {
-        const vid = vidRef.current;
-        if (!vid) return;
-        const onPlay = () => {
-            vid.style.opacity = "1";
-        };
-        vid.addEventListener("playing", onPlay);
-        return () => vid.removeEventListener("playing", onPlay);
-    }, []);
-
     const go = (id: string) => {
         document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
     };
 
+    const embedSrc =
+        `https://www.youtube.com/embed/${YT_VIDEO_ID}` +
+        `?autoplay=1&mute=1&loop=1&playlist=${YT_VIDEO_ID}` +
+        `&controls=0&showinfo=0&rel=0&modestbranding=1` +
+        `&playsinline=1&disablekb=1&fs=0&iv_load_policy=3&enablejsapi=1`;
+
     return (
         <section id="home" className="parallax-hero">
 
-            {/* ── Video background (parallax wrapper) ── */}
-            <div ref={bgRef} className="parallax-bg" style={{ overflow: "hidden" }}>
-                <video
-                    ref={vidRef}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    poster={VIDEO_POSTER}
-                    style={{
-                        position: "absolute",
-                        inset: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        objectPosition: "center",
-                        opacity: 0,                  // fades in on play
-                        transition: "opacity 1.2s ease",
-                    }}
-                >
-                    <source src={VIDEO_SRC} type="video/mp4" />
-                </video>
+            {/* ── YouTube iframe background ── */}
+            <div ref={bgRef} className="hero-video-wrap">
 
-                {/* Poster image shown until video loads */}
+                {/* Static poster — shown until iframe fades in */}
                 <div
+                    className="hero-video-poster"
                     style={{
-                        position: "absolute",
-                        inset: 0,
+                        opacity: videoRdy ? 0 : 1,
                         backgroundImage: `url('${VIDEO_POSTER}')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
                     }}
                 />
+
+                {/* YouTube iframe — client-only (avoids hydration mismatch) */}
+                {mounted && (
+                    <iframe
+                        ref={iframeRef}
+                        src={embedSrc}
+                        className="hero-yt-iframe"
+                        style={{ opacity: videoRdy ? 1 : 0 }}
+                        allow="autoplay; encrypted-media"
+                        allowFullScreen={false}
+                        title="Thailand background video"
+                        aria-hidden="true"
+                    />
+                )}
             </div>
 
             {/* Overlays */}
@@ -82,7 +81,8 @@ export default function HeroSection() {
             <div className="parallax-overlay-bottom" />
 
             {/* Floating noise grain */}
-            <div className="absolute inset-0 opacity-[0.03]"
+            <div
+                className="absolute inset-0 opacity-[0.03] pointer-events-none"
                 style={{
                     backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
                     backgroundSize: "200px",
@@ -90,17 +90,21 @@ export default function HeroSection() {
             />
 
             {/* Parallax depth orb — top-right (gold) */}
-            <div className="absolute top-[10%] right-[15%] w-72 h-72 rounded-full pointer-events-none hero-orb-1"
-                style={{ background: "radial-gradient(circle, rgba(201,168,92,0.15) 0%, transparent 70%)", filter: "blur(40px)" }} />
+            <div
+                className="absolute top-[10%] right-[15%] w-72 h-72 rounded-full pointer-events-none hero-orb-1"
+                style={{ background: "radial-gradient(circle, rgba(201,168,92,0.15) 0%, transparent 70%)", filter: "blur(40px)" }}
+            />
             {/* Parallax depth orb — bottom-left (blue) */}
-            <div className="absolute bottom-[20%] left-[8%] w-56 h-56 rounded-full pointer-events-none hero-orb-2"
-                style={{ background: "radial-gradient(circle, rgba(100,140,220,0.12) 0%, transparent 70%)", filter: "blur(50px)" }} />
+            <div
+                className="absolute bottom-[20%] left-[8%] w-56 h-56 rounded-full pointer-events-none hero-orb-2"
+                style={{ background: "radial-gradient(circle, rgba(100,140,220,0.12) 0%, transparent 70%)", filter: "blur(50px)" }}
+            />
 
             {/* Content */}
             <div ref={textRef} className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
                 <div className="max-w-3xl">
 
-                    {/* Label */}
+                    {/* Label line */}
                     <div className="flex items-center gap-4 mb-10">
                         <div className="h-px w-12 bg-amber-400" />
                     </div>

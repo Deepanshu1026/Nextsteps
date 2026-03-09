@@ -61,12 +61,12 @@ export default function Home() {
     const onMove = (e: MouseEvent) => {
       const cx = (e.clientX / window.innerWidth - 0.5) * 2; // -1 → 1
       const cy = (e.clientY / window.innerHeight - 0.5) * 2;
-      // background layer — subtle shift
-      const bg = hero.querySelector<HTMLElement>(".parallax-bg");
-      if (bg) {
-        bg.style.transform = `translateY(${window.scrollY * 0.45}px) translate(${cx * 14}px, ${cy * 8}px)`;
+      // shift the video wrapper slightly for depth
+      const wrap = hero.querySelector<HTMLElement>(".hero-video-wrap");
+      if (wrap) {
+        wrap.style.transform = `translate(${cx * 10}px, ${cy * 6}px) scale(1.04)`;
       }
-      // floating badge — counter-movement for depth
+      // floating badge — counter-movement
       const badge = hero.querySelector<HTMLElement>(".floating-badge");
       if (badge) {
         badge.style.transform = `translate(${cx * -18}px, ${cy * -12}px)`;
