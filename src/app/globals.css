@@ -263,9 +263,9 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(105deg,
-      rgba(6, 13, 27, 0.88) 0%,
-      rgba(6, 13, 27, 0.60) 50%,
-      rgba(6, 13, 27, 0.20) 100%);
+      rgba(6, 13, 27, 0.92) 0%,
+      rgba(6, 13, 27, 0.70) 50%,
+      rgba(6, 13, 27, 0.40) 100%);
 }
 
 .parallax-overlay-bottom {
@@ -276,6 +276,20 @@ body {
   height: 280px;
   background: linear-gradient(to top, var(--navy), transparent);
 }
+
+/* hero parallax orbs — smooth mouse tracking */
+.hero-orb-1,
+.hero-orb-2 {
+  transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
+}
+
+/* allow mouse parallax to fully control badge transform */
+.floating-badge {
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  will-change: transform;
+}
+
 
 /* ─────────────────────────────────────────
    MARQUEE TICKER

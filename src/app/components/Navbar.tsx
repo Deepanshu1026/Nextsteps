@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const NAV = [
     { label: "Home", href: "#home" },
@@ -13,9 +13,28 @@ const NAV = [
 export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);  // entrance anim
+    const [activeIdx, setActiveIdx] = useState(0);      // active link
 
+    /* ── entrance: fire once after mount ── */
     useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 60);
+        const t = setTimeout(() => setMounted(true), 80);
+        return () => clearTimeout(t);
+    }, []);
+
+    /* ── scroll: glass + active section ── */
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 60);
+
+            // detect which section is in view
+            const sections = NAV.map(n => document.querySelector<HTMLElement>(n.href));
+            let idx = 0;
+            sections.forEach((el, i) => {
+                if (el && el.getBoundingClientRect().top <= 120) idx = i;
+            });
+            setActiveIdx(idx);
+        };
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
@@ -29,12 +48,31 @@ export default function Navbar() {
     return (
         <>
             {/* ── NAV BAR ── */}
-            <nav id="navbar" className={`navbar ${scrolled ? "scrolled" : ""}`}>
+            <nav
+                id="navbar"
+                className={`navbar ${scrolled ? "scrolled" : ""}`}
+                style={{
+                    /* entrance: slide down from -100% → 0 */
+                    transform: mounted ? "translateY(0)" : "translateY(-110%)",
+                    opacity: mounted ? 1 : 0,
+                    transition: "transform 0.65s cubic-bezier(0.22,1,0.36,1), opacity 0.5s ease",
+                }}
+            >
                 <div className="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between">
 
                     {/* Logo */}
                     <button onClick={() => go("#home")} className="flex items-center gap-3 text-left bg-transparent border-none cursor-pointer">
-                        <span className="w-9 h-9 rounded-sm bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center flex-shrink-0">
+                        <span className="w-9 h-9 rounded-sm bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center flex-shrink-0"
+                            style={{ transition: "transform 0.3s ease, box-shadow 0.3s ease" }}
+                            onMouseEnter={e => {
+                                (e.currentTarget as HTMLElement).style.transform = "rotate(-8deg) scale(1.12)";
+                                (e.currentTarget as HTMLElement).style.boxShadow = "0 6px 24px rgba(201,168,92,0.5)";
+                            }}
+                            onMouseLeave={e => {
+                                (e.currentTarget as HTMLElement).style.transform = "";
+                                (e.currentTarget as HTMLElement).style.boxShadow = "";
+                            }}
+                        >
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
                                     stroke="#060D1B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
@@ -49,18 +87,46 @@ export default function Navbar() {
                         </div>
                     </button>
 
-                    {/* Desktop links */}
+                    {/* Desktop links — staggered entrance + underline hover */}
                     <div className="hidden lg:flex items-center gap-8">
-                        {NAV.map(l => (
-                            <button key={l.label} onClick={() => go(l.href)}
-                                className="nav-link" style={{ fontFamily: "'Inter',sans-serif" }}>
+                        {NAV.map((l, i) => (
+                            <button
+                                key={l.label}
+                                onClick={() => go(l.href)}
+                                className="nav-link nav-link-animated"
+                                data-active={activeIdx === i ? "true" : "false"}
+                                style={{
+                                    fontFamily: "'Inter',sans-serif",
+                                    opacity: mounted ? 1 : 0,
+                                    transform: mounted ? "translateY(0)" : "translateY(-12px)",
+                                    transition: `opacity 0.5s ease ${0.12 + i * 0.07}s, transform 0.5s ease ${0.12 + i * 0.07}s, color 0.3s`,
+                                    color: activeIdx === i ? "var(--gold-light)" : undefined,
+                                    position: "relative",
+                                }}
+                            >
                                 {l.label}
+                                {/* animated underline */}
+                                <span style={{
+                                    position: "absolute",
+                                    bottom: "-3px",
+                                    left: 0,
+                                    height: "1px",
+                                    background: "var(--gold)",
+                                    width: activeIdx === i ? "100%" : "0%",
+                                    transition: "width 0.35s cubic-bezier(0.25,0.8,0.25,1)",
+                                }} />
                             </button>
                         ))}
                     </div>
 
                     {/* Right actions */}
-                    <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-5"
+                        style={{
+                            opacity: mounted ? 1 : 0,
+                            transform: mounted ? "translateY(0)" : "translateY(-12px)",
+                            transition: "opacity 0.5s ease 0.55s, transform 0.5s ease 0.55s",
+                        }}
+                    >
                         <button onClick={() => go("#contact")}
                             id="nav-cta"
                             className="btn-gold hidden sm:inline-flex text-[11px] py-3 px-7"
@@ -108,13 +174,17 @@ export default function Navbar() {
                     <p className="font-serif text-2xl font-bold">
                         <span className="text-gold">Star</span><span>Visa</span>
                     </p>
-                    {/* <p className="text-[10px] tracking-[0.3em] text-amber-400/60 uppercase mt-1">Gateway to Thailand</p> */}
                 </div>
 
                 <div className="flex flex-col gap-1">
-                    {NAV.map(l => (
+                    {NAV.map((l, i) => (
                         <button key={l.label} onClick={() => go(l.href)}
-                            className="text-left py-4 border-b text-base font-medium text-white/70 hover:text-amber-300 bg-transparent border-white/06 cursor-pointer transition-colors">
+                            className="text-left py-4 border-b text-base font-medium text-white/70 hover:text-amber-300 bg-transparent border-white/06 cursor-pointer transition-colors"
+                            style={{
+                                opacity: open ? 1 : 0,
+                                transform: open ? "translateX(0)" : "translateX(30px)",
+                                transition: `opacity 0.4s ease ${i * 0.06}s, transform 0.4s ease ${i * 0.06}s, color 0.3s`,
+                            }}>
                             {l.label}
                         </button>
                     ))}

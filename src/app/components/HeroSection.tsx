@@ -1,12 +1,19 @@
 "use client";
 import { useEffect, useRef } from "react";
 
+// High-quality free Thailand aerial video from Pexels
+// https://www.pexels.com/video/aerial-view-of-islands-in-thailand-1851190/
+const VIDEO_SRC =
+    "https://videos.pexels.com/video-files/1851190/1851190-hd_1920_1080_25fps.mp4";
+const VIDEO_POSTER = "/hero_modern.png"; // shown while video loads
+
 export default function HeroSection() {
     const bgRef = useRef<HTMLDivElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
+    const vidRef = useRef<HTMLVideoElement>(null);
 
+    /* ── Scroll parallax (applies to the video wrapper) ── */
     useEffect(() => {
-        // ── True JS Parallax ──
         const onScroll = () => {
             const y = window.scrollY;
             if (bgRef.current) bgRef.current.style.transform = `translateY(${y * 0.45}px)`;
@@ -17,18 +24,58 @@ export default function HeroSection() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    /* ── Fade video in once it starts playing ── */
+    useEffect(() => {
+        const vid = vidRef.current;
+        if (!vid) return;
+        const onPlay = () => {
+            vid.style.opacity = "1";
+        };
+        vid.addEventListener("playing", onPlay);
+        return () => vid.removeEventListener("playing", onPlay);
+    }, []);
+
     const go = (id: string) => {
         document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
     };
 
     return (
         <section id="home" className="parallax-hero">
-            {/* Parallax BG */}
-            <div
-                ref={bgRef}
-                className="parallax-bg"
-                style={{ backgroundImage: "url('/hero_modern.png')" }}
-            />
+
+            {/* ── Video background (parallax wrapper) ── */}
+            <div ref={bgRef} className="parallax-bg" style={{ overflow: "hidden" }}>
+                <video
+                    ref={vidRef}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster={VIDEO_POSTER}
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                        opacity: 0,                  // fades in on play
+                        transition: "opacity 1.2s ease",
+                    }}
+                >
+                    <source src={VIDEO_SRC} type="video/mp4" />
+                </video>
+
+                {/* Poster image shown until video loads */}
+                <div
+                    style={{
+                        position: "absolute",
+                        inset: 0,
+                        backgroundImage: `url('${VIDEO_POSTER}')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                />
+            </div>
 
             {/* Overlays */}
             <div className="parallax-overlay" />
@@ -36,8 +83,18 @@ export default function HeroSection() {
 
             {/* Floating noise grain */}
             <div className="absolute inset-0 opacity-[0.03]"
-                style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")", backgroundSize: "200px" }}
+                style={{
+                    backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
+                    backgroundSize: "200px",
+                }}
             />
+
+            {/* Parallax depth orb — top-right (gold) */}
+            <div className="absolute top-[10%] right-[15%] w-72 h-72 rounded-full pointer-events-none hero-orb-1"
+                style={{ background: "radial-gradient(circle, rgba(201,168,92,0.15) 0%, transparent 70%)", filter: "blur(40px)" }} />
+            {/* Parallax depth orb — bottom-left (blue) */}
+            <div className="absolute bottom-[20%] left-[8%] w-56 h-56 rounded-full pointer-events-none hero-orb-2"
+                style={{ background: "radial-gradient(circle, rgba(100,140,220,0.12) 0%, transparent 70%)", filter: "blur(50px)" }} />
 
             {/* Content */}
             <div ref={textRef} className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 w-full">
@@ -46,18 +103,17 @@ export default function HeroSection() {
                     {/* Label */}
                     <div className="flex items-center gap-4 mb-10">
                         <div className="h-px w-12 bg-amber-400" />
-                        {/* <p className="section-label">Gateway to Thailand</p> */}
                     </div>
 
                     {/* Headline */}
                     <h1 className="display-xl text-white mb-6" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-                        Your Trusted<br />
-                        <em className="text-gold not-italic">Visa Partner</em><br />
-                        in Thailand
+                        <span data-shuffle>Your Trusted</span><br />
+                        <em className="text-gold not-italic"><span data-shuffle>Visa Partner</span></em><br />
+                        <span data-shuffle>in Thailand</span>
                     </h1>
 
                     <p className="text-white/60 text-lg leading-relaxed mb-12 max-w-xl font-light">
-                        Thailand's most trusted visa consultancy since 1995. We handle every complexity
+                        Thailand&apos;s most trusted visa consultancy since 1995. We handle every complexity
                         so your journey begins with clarity and confidence.
                     </p>
 
@@ -98,7 +154,7 @@ export default function HeroSection() {
                 <span className="section-label text-[9px]">Scroll</span>
             </div>
 
-            {/* Floating country badge */}
+            {/* Floating badge */}
             <div className="absolute top-32 right-8 lg:right-16 z-20 floating-badge hidden md:block">
                 <div className="glass-card rounded-2xl px-5 py-4 text-center"
                     style={{ background: "rgba(6,13,27,0.6)", border: "1px solid rgba(201,168,92,0.25)" }}>
