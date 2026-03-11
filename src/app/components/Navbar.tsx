@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { Layers, ArrowRight, X } from "lucide-react";
 
 const NAV = [
     { label: "Home", href: "#home" },
@@ -73,10 +74,7 @@ export default function Navbar() {
                                 (e.currentTarget as HTMLElement).style.boxShadow = "";
                             }}
                         >
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                    stroke="#060D1B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
+                            <Layers size={18} color="#060D1B" strokeWidth={2.2} />
                         </span>
                         <div>
                             <p className="font-serif text-lg font-bold leading-none tracking-wide">
@@ -132,9 +130,7 @@ export default function Navbar() {
                             className="btn-gold hidden sm:inline-flex text-[11px] py-3 px-7"
                             style={{ clipPath: "polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px))" }}>
                             <span style={{ position: "relative", zIndex: 1 }}>Get Started</span>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
+                            <ArrowRight size={14} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
                         </button>
 
                         {/* Hamburger */}
@@ -165,9 +161,7 @@ export default function Navbar() {
             <div className={`mobile-drawer hide-scroll ${open ? "open" : ""}`}>
                 <button onClick={() => setOpen(false)}
                     className="absolute top-6 right-6 text-white/40 hover:text-white bg-transparent border-none cursor-pointer transition-colors">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="1.5" />
-                    </svg>
+                    <X size={24} strokeWidth={1.5} />
                 </button>
 
                 <div className="mb-10">

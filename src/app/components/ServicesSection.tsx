@@ -1,10 +1,10 @@
 "use client";
-
+import { ArrowRight, Map, Crown, Building2, Scale, Languages } from "lucide-react";
 const SERVICES = [
     {
         id: "thai-visa",
         num: "01",
-        icon: "🇹🇭",
+        icon: <Map size={40} className="text-amber-400" strokeWidth={1.5} />,
         title: "Thai Visa",
         subtitle: "Retirement · Student · Dependent · Work",
         desc: "Comprehensive assistance for all Thai visa categories. We handle every form, follow-up, and filing on your behalf.",
@@ -13,7 +13,7 @@ const SERVICES = [
     {
         id: "privilege-card",
         num: "02",
-        icon: "💎",
+        icon: <Crown size={40} className="text-amber-400" strokeWidth={1.5} />,
         title: "Thailand Privilege Card",
         subtitle: "Elite Long-Stay Programme",
         desc: "Exclusive 5–20 year visas with VIP airport privileges, health check-ups, golf rounds, and concierge services.",
@@ -22,7 +22,7 @@ const SERVICES = [
     {
         id: "ltr-visa",
         num: "03",
-        icon: "🏡",
+        icon: <Building2 size={40} className="text-amber-400" strokeWidth={1.5} />,
         title: "LTR Visa",
         subtitle: "Long Term Resident · Up to 10 Years",
         desc: "Thailand's game-changing visa for wealthy pensioners, remote workers, and highly-skilled professionals.",
@@ -32,7 +32,7 @@ const SERVICES = [
     {
         id: "legal-services",
         num: "04",
-        icon: "⚖️",
+        icon: <Scale size={40} className="text-amber-400" strokeWidth={1.5} />,
         title: "Legal Services",
         subtitle: "Business & Immigration Law",
         desc: "BOI applications, company registration, work permits, and full immigration legal representation.",
@@ -41,7 +41,7 @@ const SERVICES = [
     {
         id: "translation",
         num: "05",
-        icon: "🌐",
+        icon: <Languages size={40} className="text-amber-400" strokeWidth={1.5} />,
         title: "Translation",
         subtitle: "Certified & Notarised Documents",
         desc: "Official Thai–English translation for immigration, legal, and business documents. Certified and court-accepted.",
@@ -104,7 +104,7 @@ export default function ServicesSection() {
                             )}
 
                             {/* Icon */}
-                            <div className="text-4xl mb-5">{s.icon}</div>
+                            <div className="mb-6">{s.icon}</div>
 
                             <h3 className="font-serif text-2xl font-bold text-white mb-1">{s.title}</h3>
                             <p className="text-amber-400/70 text-xs tracking-wider uppercase mb-4 font-medium">{s.subtitle}</p>
@@ -123,9 +123,7 @@ export default function ServicesSection() {
                             {/* CTA arrow */}
                             <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold tracking-wider uppercase group">
                                 <span>Learn More</span>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" className="group-hover:translate-x-1 transition-transform">
-                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                                </svg>
+                                <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
                             </div>
 
                             {/* Bottom accent line */}
@@ -153,9 +151,7 @@ export default function ServicesSection() {
                         </div>
                         <button onClick={() => go("#contact")} id="svc-cta" className="btn-gold mt-8 self-start">
                             <span style={{ position: "relative", zIndex: 1 }}>Free Consultation</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
+                            <ArrowRight size={16} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
                         </button>
                     </div>
                 </div>

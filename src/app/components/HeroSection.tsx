@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 // ─── Video sources (tried in order) ───────────────────────────────────────────
 // Pexels "Aerial view of islands in Thailand" — 1080p 25fps
@@ -135,9 +136,7 @@ export default function HeroSection() {
                     <div className="flex flex-wrap gap-4 mb-16">
                         <button id="hero-cta-primary" onClick={() => go("#contact")} className="btn-gold">
                             <span style={{ position: "relative", zIndex: 1 }}>Begin Your Journey</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
+                            <ArrowRight size={16} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
                         </button>
                         <button id="hero-cta-secondary" onClick={() => go("#services")} className="btn-ghost">
                             Explore Services

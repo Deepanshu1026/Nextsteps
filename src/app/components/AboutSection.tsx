@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { ArrowRight } from "lucide-react";
 
 const STATS = [
     { val: "5,000+", label: "Happy Clients" },
@@ -110,9 +111,7 @@ export default function AboutSection() {
                         <button className="btn-gold mt-10 reveal" data-reveal
                             onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}>
                             <span style={{ position: "relative", zIndex: 1 }}>Contact Our Team</span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
+                            <ArrowRight size={16} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
                         </button>
                     </div>
 

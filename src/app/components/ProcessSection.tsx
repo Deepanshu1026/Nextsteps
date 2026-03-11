@@ -1,29 +1,29 @@
 "use client";
-
+import { ArrowRight, MessageSquare, ClipboardCheck, Send, Target } from "lucide-react";
 const STEPS = [
     {
         n: "01",
         title: "Free Consultation",
         desc: "Schedule a complimentary 30-minute session with our visa experts to assess your unique situation and eligibility.",
-        icon: "💬",
+        icon: <MessageSquare size={32} className="text-amber-400" strokeWidth={1.5} />,
     },
     {
         n: "02",
         title: "Document Review",
         desc: "We create a personalised document checklist and guide you through compiling every requirement — nothing missed.",
-        icon: "📋",
+        icon: <ClipboardCheck size={32} className="text-amber-400" strokeWidth={1.5} />,
     },
     {
         n: "03",
         title: "Application Filing",
         desc: "Our immigration specialists submit your application and liaise directly with Thai authorities on your behalf.",
-        icon: "📤",
+        icon: <Send size={32} className="text-amber-400" strokeWidth={1.5} />,
     },
     {
         n: "04",
         title: "Approval & Beyond",
         desc: "We celebrate your approval and provide ongoing support for renewals, extensions, and any future needs.",
-        icon: "🎯",
+        icon: <Target size={32} className="text-amber-400" strokeWidth={1.5} />,
     },
 ];
 
@@ -70,7 +70,7 @@ export default function ProcessSection() {
                                     <div className="process-line hidden lg:block" />
                                 )}
                             </div>
-                            <span className="text-3xl mb-4 block">{s.icon}</span>
+                            <span className="mb-6 block">{s.icon}</span>
                             <h3 className="font-serif text-xl font-bold text-white mb-3">{s.title}</h3>
                             <p className="text-white/45 text-sm leading-relaxed">{s.desc}</p>
                         </div>
@@ -107,9 +107,7 @@ export default function ProcessSection() {
                             <button id="ltr-cta" className="btn-gold w-full lg:w-auto justify-center"
                                 onClick={() => document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" })}>
                                 <span style={{ position: "relative", zIndex: 1 }}>Apply for LTR Visa</span>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                    <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-                                </svg>
+                                <ArrowRight size={16} strokeWidth={2.5} style={{ position: "relative", zIndex: 1 }} />
                             </button>
                         </div>
                     </div>

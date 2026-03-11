@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Phone, Mail, MapPin, Send } from "lucide-react";
 
 const SERVICES_OPT = [
     { value: "thai-visa", label: "Thai Visa" },
@@ -15,31 +16,21 @@ const CONTACT_INFO = [
         label: "Phone",
         value: "+66 XX XXX XXXX",
         icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.72 11.8 19.79 19.79 0 011.65 3.2 2 2 0 013.62 1h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"
-                    stroke="#C9A85C" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
+            <Phone size={20} color="#C9A85C" strokeWidth={1.5} />
         ),
     },
     {
         label: "Email",
         value: "info@starvisa.com",
         icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-                    stroke="#C9A85C" strokeWidth="1.5" strokeLinecap="round" />
-                <path d="M22 6l-10 7L2 6" stroke="#C9A85C" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
+            <Mail size={20} color="#C9A85C" strokeWidth={1.5} />
         ),
     },
     {
         label: "Office",
         value: "Bangkok, Thailand",
         icon: (
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" stroke="#C9A85C" strokeWidth="1.5" />
-                <circle cx="12" cy="10" r="3" stroke="#C9A85C" strokeWidth="1.5" />
-            </svg>
+            <MapPin size={20} color="#C9A85C" strokeWidth={1.5} />
         ),
     },
 ];
@@ -193,9 +184,7 @@ export default function ContactSection() {
                                     </p>
                                     <button type="submit" id="contact-submit" className="btn-gold">
                                         <span style={{ position: "relative", zIndex: 1 }}>Send Message</span>
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style={{ position: "relative", zIndex: 1 }}>
-                                            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                                        </svg>
+                                        <Send size={16} strokeWidth={2} style={{ position: "relative", zIndex: 1 }} />
                                     </button>
                                 </div>
                             </form>

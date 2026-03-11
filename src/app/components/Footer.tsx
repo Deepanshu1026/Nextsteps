@@ -1,5 +1,5 @@
 "use client";
-
+import { Layers, ArrowUp } from "lucide-react";
 const LINKS = {
     Services: ["Thai Visa", "LTR Visa", "Privilege Card", "Legal Services", "Translation"],
     Company: ["About Us", "Our Story", "Testimonials", "Careers"],
@@ -22,10 +22,7 @@ export default function Footer() {
                         <button onClick={() => go("#home")}
                             className="flex items-center gap-3 mb-6 bg-transparent border-none cursor-pointer">
                             <span className="w-10 h-10 rounded-sm bg-gradient-to-br from-amber-400 to-yellow-600 flex items-center justify-center">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
-                                        stroke="#060D1B" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                                <Layers size={18} color="#060D1B" strokeWidth={2.2} />
                             </span>
                             <div>
                                 <p className="font-serif text-xl font-bold leading-none">
@@ -95,9 +92,7 @@ export default function Footer() {
           rounded-full shadow-2xl cursor-pointer border-none z-50 transition-all hover:scale-110"
                 style={{ background: "linear-gradient(135deg, #C9A85C, #A07840)", boxShadow: "0 8px 30px rgba(201,168,92,0.4)" }}
                 aria-label="Back to top">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 19V5M5 12l7-7 7 7" stroke="#060D1B" strokeWidth="2.5" strokeLinecap="round" />
-                </svg>
+                <ArrowUp size={18} color="#060D1B" strokeWidth={2.5} />
             </button>
         </footer>
     );

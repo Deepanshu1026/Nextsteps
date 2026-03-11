@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Star } from "lucide-react";
 
 const TESTIMONIALS = [
     {
@@ -7,7 +8,7 @@ const TESTIMONIALS = [
         name: "James Mitchell",
         role: "Retired Expat",
         country: "United Kingdom",
-        flag: "🇬🇧",
+        initials: "JM",
         years: "Client since 2018",
         quote:
             "StarVisa transformed what I imagined to be an overwhelming process into something genuinely effortless. Approved in under two weeks — remarkable.",
@@ -18,7 +19,7 @@ const TESTIMONIALS = [
         name: "Priya Sharma",
         role: "Digital Nomad",
         country: "India",
-        flag: "🇮🇳",
+        initials: "PS",
         years: "Client since 2022",
         quote:
             "The LTR Visa application seemed impossible until StarVisa stepped in. Every document, every deadline — handled flawlessly. I couldn't recommend them more highly.",
@@ -29,7 +30,7 @@ const TESTIMONIALS = [
         name: "Thomas Weber",
         role: "Business Owner",
         country: "Germany",
-        flag: "🇩🇪",
+        initials: "TW",
         years: "Client since 2019",
         quote:
             "Their legal team handled my BOI application and work permits with absolute precision. A true one-stop partner for anyone building a life in Thailand.",
@@ -40,7 +41,7 @@ const TESTIMONIALS = [
         name: "Yuki Tanaka",
         role: "University Student",
         country: "Japan",
-        flag: "🇯🇵",
+        initials: "YT",
         years: "Client since 2023",
         quote:
             "Fast, accurate, professionally certified translations. The team was incredibly easy to work with and delivered ahead of schedule every time.",
@@ -51,9 +52,7 @@ const TESTIMONIALS = [
 const Stars = () => (
     <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map(i => (
-            <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#C9A85C">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-            </svg>
+            <Star key={i} size={14} fill="#C9A85C" color="#C9A85C" strokeWidth={0} />
         ))}
     </div>
 );
@@ -93,9 +92,9 @@ export default function TestimonialsSection() {
                                     &ldquo;{t.quote}&rdquo;
                                 </blockquote>
                                 <div className="flex items-center gap-5">
-                                    <div className="w-14 h-14 rounded-full flex items-center justify-center text-3xl"
+                                    <div className="w-14 h-14 rounded-full flex items-center justify-center font-serif text-2xl text-amber-400"
                                         style={{ background: "rgba(201,168,92,0.1)", border: "1px solid rgba(201,168,92,0.3)" }}>
-                                        {t.flag}
+                                        {t.initials}
                                     </div>
                                     <div>
                                         <p className="font-semibold text-white text-base">{t.name}</p>
@@ -131,9 +130,9 @@ export default function TestimonialsSection() {
                                 onClick={() => setActive(i)}
                                 className={`testimonial-modern text-left cursor-pointer border-none w-full transition-all ${active === i ? "active" : ""}`}>
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl flex-shrink-0"
+                                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-serif text-xl text-amber-400 flex-shrink-0"
                                         style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                                        {t2.flag}
+                                        {t2.initials}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className={`font-semibold text-sm ${active === i ? "text-amber-300" : "text-white"}`}>{t2.name}</p>
