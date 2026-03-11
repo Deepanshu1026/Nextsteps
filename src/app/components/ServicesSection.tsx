@@ -125,10 +125,6 @@ export default function ServicesSection() {
                                 <span>Learn More</span>
                                 <ArrowRight size={14} strokeWidth={2.5} className="group-hover:translate-x-1 transition-transform" />
                             </div>
-
-                            {/* Bottom accent line */}
-                            <div className="absolute bottom-0 left-0 right-0 h-px"
-                                style={{ background: "linear-gradient(90deg, transparent, rgba(201,168,92,0.4), transparent)" }} />
                         </div>
                     ))}
 
